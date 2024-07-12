@@ -1,0 +1,17 @@
+<div
+  *ngIf="home"
+  [ngStyle]="{
+    'background-image': 'url(' + home.background_image + ')'
+  }"
+>
+  <div>
+    <h1>{{ home.title }}</h1>
+  </div>
+  <div [innerHTML]="home.description"></div>
+  <div>
+    <button (click)="continue()">Continue</button>
+  </div>
+</div>
+<div *ngIf="errorMessage">
+  <p>{{ errorMessage }}</p>
+</div>

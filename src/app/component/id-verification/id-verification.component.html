@@ -1,0 +1,15 @@
+<div>
+  <form (ngSubmit)="verifyId()">
+    <div>
+      <label for="cnic">Enter your ID number:</label>
+      <input type="text" id="cnic" [(ngModel)]="cnic" name="cnic" required />
+    </div>
+
+    <div>
+      <button type="submit">Verify</button>
+    </div>
+  </form>
+  <div *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+</div>

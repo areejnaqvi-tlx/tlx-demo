@@ -1,0 +1,32 @@
+<div>
+  <form (ngSubmit)="onContinue()">
+    <div *ngFor="let card of creditCards">
+      <input
+        type="radio"
+        name="creditCard"
+        [value]="card.id"
+        [(ngModel)]="selectedCardType"
+        id="card.type"
+      />
+      <label for="card.type">
+        <h2>{{ card.type }}</h2>
+      </label>
+      <h5>Limit:</h5>
+      <p>{{ card.credit_limit | currency }}</p>
+      <h5>Interest Rate:</h5>
+      <p>{{ card.interest_rate }}%</p>
+      <h5>Benefits:</h5>
+      <div [innerHTML]="card.benefits"></div>
+    </div>
+    <div>
+      <button type="submit">Continue</button>
+    </div>
+  </form>
+</div>
+<div *ngIf="!validDetails">
+  <p>Something went wrong, try again later.</p>
+  <button (click)="goBack()">Go Back</button>
+</div>
+<div *ngIf="errorMessage">
+  <p>{{ errorMessage }}</p>
+</div>

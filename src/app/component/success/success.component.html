@@ -1,0 +1,8 @@
+<div *ngIf="validParams">
+  <h2>Congrats {{ user }}!</h2>
+  <h5>You will recieve your card in the mail in 8-10 business days.</h5>
+</div>
+<div *ngIf="!validParams">
+  <p>Something went wrong, try again later.</p>
+  <button (click)="goBack()">Go Back</button>
+</div>
