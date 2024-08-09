@@ -3,8 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { directus, User } from '../../../../directus';
-import { createItem } from '@directus/sdk';
+import { Card, directus, User } from '../../../../directus';
+import { createItem, readItem } from '@directus/sdk';
 
 @Component({
   selector: 'app-user-details',
@@ -17,6 +17,7 @@ export class UserDetailsComponent implements OnInit {
   user: User;
   validParams: boolean;
   errorMessage: string;
+  cardID: number;
 
   constructor(private route: ActivatedRoute, private router: Router) {
     this.user = {
@@ -31,13 +32,14 @@ export class UserDetailsComponent implements OnInit {
     };
     this.validParams = true;
     this.errorMessage = '';
+    this.cardID = null;
   }
 
   async ngOnInit() {
     // get cnic and selected card
     this.route.queryParamMap.subscribe(async (params) => {
       this.user.cnic = params.get('cnic') || '';
-      this.user.credit_card = [parseInt(params.get('cardType'))];
+      this.cardID = parseInt(params.get('cardType'));
       if (this.user.cnic === '') {
         this.validParams = false;
       } else {
@@ -55,6 +57,7 @@ export class UserDetailsComponent implements OnInit {
   async createUser() {
     try {
       // create user
+      const card = await directus.request(readItem('credit_card', this.cardID));
       const createdUser = await directus.request(
         createItem('user', {
           id: this.user.cnic,
@@ -64,22 +67,14 @@ export class UserDetailsComponent implements OnInit {
           mothers_name: this.user.mothers_name,
           address: this.user.address,
           marital_status: this.user.marital_status,
+          credit_card: [card],
         })
       );
       if (createdUser['id'] === this.user.cnic) {
-        // update relation table to add this card for this user
-        const addCard = await directus.request(
-          createItem('user_credit_card', {
-            user_id: this.user.cnic,
-            credit_card_id: this.user.credit_card,
-          })
-        );
-        if (addCard['user_id'] === this.user.cnic) {
-          this.errorMessage = '';
-          this.router.navigate(['/success'], {
-            queryParams: { user: this.user.given_name, cnic: this.user.cnic },
-          });
-        }
+        this.errorMessage = '';
+        this.router.navigate(['/success'], {
+          queryParams: { user: this.user.given_name, cnic: this.user.cnic },
+        });
       }
       this.validParams = false;
     } catch (error) {

@@ -21,7 +21,7 @@ type User = {
 };
 
 type Card = {
-  id: string;
+  id: number;
   type: string;
   credit_limit: number;
   interest_rate: number;

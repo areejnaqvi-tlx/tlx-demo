@@ -1,32 +1,40 @@
 <div>
-  <form (ngSubmit)="onContinue()">
-    <div *ngFor="let card of creditCards">
-      <input
-        type="radio"
-        name="creditCard"
-        [value]="card.id"
-        [(ngModel)]="selectedCardType"
-        id="card.type"
-      />
-      <label for="card.type">
-        <h2>{{ card.type }}</h2>
-      </label>
-      <h5>Limit:</h5>
-      <p>{{ card.credit_limit | currency }}</p>
-      <h5>Interest Rate:</h5>
-      <p>{{ card.interest_rate }}%</p>
-      <h5>Benefits:</h5>
-      <div [innerHTML]="card.benefits"></div>
-    </div>
-    <div>
-      <button type="submit">Continue</button>
-    </div>
-  </form>
+  <div *ngIf="cardsAvailable">
+    <form (ngSubmit)="onContinue()">
+      <div *ngFor="let card of creditCards">
+        <span>
+          <input
+            type="radio"
+            name="creditCard"
+            [value]="card.id"
+            [(ngModel)]="selectedCardType"
+            id="card.type"
+          />
+          <label for="card.type">
+            <h2>{{ card.type }}</h2>
+          </label>
+        </span>
+        <h4>Limit:</h4>
+        <h5>{{ card.credit_limit | currency }}</h5>
+        <h4>Interest Rate:</h4>
+        <h5>{{ card.interest_rate }}%</h5>
+        <h4>Benefits:</h4>
+        <div [innerHTML]="card.benefits"></div>
+      </div>
+      <div>
+        <button type="submit">Continue</button>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="!cardsAvailable">
+    <h5>There are currently no other cards for you to apply for.</h5>
+    <button (click)="viewInformation()">View your information</button>
+  </div>
 </div>
 <div *ngIf="!validDetails">
-  <p>Something went wrong, try again later.</p>
+  <h5>Something went wrong, try again later.</h5>
   <button (click)="goBack()">Go Back</button>
 </div>
 <div *ngIf="errorMessage">
-  <p>{{ errorMessage }}</p>
+  <h5>{{ errorMessage }}</h5>
 </div>

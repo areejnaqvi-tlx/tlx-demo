@@ -39,24 +39,12 @@ export class SuccessComponent implements OnInit {
     });
   }
 
-  async showUserInformation() {
-    if (this.user === null) {
-      this.user = await directus.request<User>(readItem('user', this.cnic));
-    }
-    for (let relation_id of this.user.credit_card) {
-      const card_id = await directus.request(
-        readItem('user_credit_card', relation_id)
-      );
-      const card = await directus.request<Card>(
-        readItem('credit_card', card_id['credit_card_id'])
-      );
-      this.creditCardInformation.push(card);
-    }
-    this.userInformationVisible = true;
-  }
-
-  hideUserInformation() {
-    this.userInformationVisible = false;
+  showUserInformation() {
+    this.router.navigate(['view-user-details'], {
+      queryParams: {
+        cnic: this.cnic,
+      },
+    });
   }
 
   goBack() {

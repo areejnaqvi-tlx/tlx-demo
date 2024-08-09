@@ -1,9 +1,17 @@
 import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { directus, Card, User } from '../../../../directus';
-import { createItem, readItem, readItems, updateItem } from '@directus/sdk';
+import {
+  createItem,
+  readItem,
+  readItems,
+  triggerFlow,
+  updateItem,
+} from '@directus/sdk';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import AreObjectsEqual from '../../../../public/are-objects-equal';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-credit-card-selection',
@@ -19,16 +27,14 @@ export class CreditCardSelectionComponent implements OnInit {
   cnic: string;
   validDetails: boolean;
   existingUser: boolean;
+  cardsAvailable: boolean;
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private renderer: Renderer2,
-    private el: ElementRef
-  ) {
+  constructor(private router: Router, private route: ActivatedRoute) {
     this.selectedCardType = -1;
     this.errorMessage = '';
     this.validDetails = true;
+    this.creditCards = [];
+    this.cardsAvailable = true;
   }
 
   async ngOnInit() {
@@ -45,20 +51,50 @@ export class CreditCardSelectionComponent implements OnInit {
       });
 
       // get credit card information from directus
-      const response = await directus.request(readItems('credit_card'));
-      this.errorMessage = '';
-      this.creditCards = response.length > 0 ? (response as Card[]) : [];
+      const response = await directus.request<Card[]>(readItems('credit_card'));
+      if (Array.isArray(response) && response.length > 0) {
+        this.errorMessage = '';
+      } else {
+        this.errorMessage =
+          'Unable to fetch credit card information, please try again later.';
+      }
+      if (!this.existingUser) {
+        this.creditCards = response;
+      } else {
+        const user = await directus.request<User>(readItem('user', this.cnic));
+        if (user.credit_card && user.credit_card.length > 0) {
+          for (let card of response) {
+            console.log('user credit card list is: ', user.credit_card);
+            console.log('curr card is: ', { ...card });
+            if (!user.credit_card.includes(card.id)) {
+              this.creditCards.push(card);
+            }
+          }
+        } else {
+          this.creditCards = response;
+        }
+      }
+      if (this.creditCards.length === 0) {
+        this.cardsAvailable = false;
+      }
     } catch (error) {
       console.log('Error getting credit card information: ', error);
       this.errorMessage =
         'An error occurred when loading credit card information, please try again later.';
-      this.creditCards = [];
     }
   }
 
   // in case of error in cnic
   goBack() {
     this.router.navigate(['id-verification']);
+  }
+
+  viewInformation() {
+    this.router.navigate(['view-user-details'], {
+      queryParams: {
+        cnic: this.cnic,
+      },
+    });
   }
 
   // once credit card has been selected
@@ -68,15 +104,15 @@ export class CreditCardSelectionComponent implements OnInit {
         queryParams: { cnic: this.cnic, cardType: this.selectedCardType },
       });
     } else if (this.selectedCardType !== -1 && this.existingUser) {
-      // TODO: fix css styling, add logo, fix credit cards styling, add more types of credit cards
-      // TODO: make it so that users can only apply for credit cards they dont already have
-      const addCard = await directus.request(
-        createItem('user_credit_card', {
-          user_id: this.cnic,
-          credit_card_id: this.selectedCardType,
+      const user = await directus.request<User>(readItem('user', this.cnic));
+      const card = await directus.request<Card>(
+        readItem('credit_card', this.selectedCardType)
+      );
+      const update = await directus.request(
+        updateItem('user', this.cnic, {
+          credit_card: [...user.credit_card, card],
         })
       );
-      const user = await directus.request<User>(readItem('user', this.cnic));
       this.router.navigate(['/success'], {
         queryParams: { user: user.given_name, cnic: this.cnic },
       });
