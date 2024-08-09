@@ -1,0 +1,17 @@
+<div *ngIf="user">
+  <h1>{{ user.given_name }} {{ user.last_name }}</h1>
+  <h5>CNIC: {{ user.cnic }}</h5>
+  <h5>Email: {{ user.email }}</h5>
+  <h5>Address: {{ user.address }}</h5>
+  <h3>Cards:</h3>
+  <ol *ngFor="let card of creditCardInformation">
+    <li>
+      <h5>Type: {{ card.type }}</h5>
+      <h5>Credit Limit: {{ card.credit_limit | currency }}</h5>
+      <h5>Interest Rate: {{ card.interest_rate }}%</h5>
+      <h5>Annual Fee: {{ card.annual_fee | currency }}</h5>
+      <h5>Benefits:</h5>
+      <div [innerHTML]="card.benefits"></div>
+    </li>
+  </ol>
+</div>

@@ -96,6 +96,8 @@ export class CreditCardSelectionComponent implements OnInit {
       },
     });
   }
+  // TODO: implement flow for something
+  // TODO: fix CSS styling, add more graphics and stuff, make it look like figma as closely as possible
 
   // once credit card has been selected
   async onContinue() {

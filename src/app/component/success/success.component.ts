@@ -17,7 +17,6 @@ export class SuccessComponent implements OnInit {
   cnic: string;
   cards: number[];
   user: User;
-  userInformationVisible: boolean;
   creditCardInformation: Card[];
 
   constructor(private route: ActivatedRoute, private router: Router) {
@@ -25,6 +24,8 @@ export class SuccessComponent implements OnInit {
     this.username = null;
     this.user = null;
     this.creditCardInformation = [];
+    this.cnic = null;
+    this.cards = [];
   }
 
   ngOnInit(): void {
