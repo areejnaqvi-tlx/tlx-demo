@@ -29,6 +29,14 @@ type Card = {
   benefits: string;
 };
 
+type Theme = {
+  id: string;
+  base_style: string;
+  form_style?: string;
+  primary_color: string;
+  secondary_color: string;
+}
+
 const directus = createDirectus(environment.directusApiUrl).with(rest());
 
-export { directus, Home, User, Card };
+export { directus, Home, User, Card, Theme };
