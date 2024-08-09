@@ -1,8 +1,8 @@
 import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { readItem } from '@directus/sdk';
-import { directus } from '../../directus';
+import { readItem, readSingleton } from '@directus/sdk';
+import { directus, Theme } from '../../directus';
 
 @Component({
   selector: 'app-root',
@@ -13,22 +13,32 @@ import { directus } from '../../directus';
 })
 export class AppComponent implements OnInit {
   title = 'Apply for a card';
-  layoutCss: string;
+  theme: Theme;
   formCss: string;
+  layoutCss: string;
+  primaryColor: string;
+  secondaryColor: string;
 
   constructor(private renderer: Renderer2, private el: ElementRef) {}
 
   async ngOnInit(): Promise<void> {
     try {
-      this.layoutCss = (await directus.request(readItem('layout', 'app')))[
-        'css'
-      ];
-      this.formCss = (await directus.request(readItem('layout', 'form')))[
-        'css'
-      ];
+      this.theme = await directus.request<Theme>(readSingleton('theme'));
+      this.layoutCss = this.theme.base_style;
+      this.formCss = this.theme.form_style;
+      this.primaryColor = this.theme.primary_color;
+      this.secondaryColor = this.theme.secondary_color;
+      this.layoutCss = this.layoutCss.replace(
+        /PRIMARY_COLOR_PLACEHOLDER/g,
+        this.primaryColor
+      );
+      this.layoutCss = this.layoutCss.replace(
+        /SECONDARY_COLOR_PLACEHOLDER/g,
+        this.secondaryColor
+      );
 
-      this.applyDynamicCss(this.layoutCss);
       this.applyDynamicCss(this.formCss);
+      this.applyDynamicCss(this.layoutCss);
     } catch (error) {
       console.log('Unable to get CSS from Directus: ', error);
     }
