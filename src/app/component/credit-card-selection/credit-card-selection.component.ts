@@ -28,6 +28,7 @@ export class CreditCardSelectionComponent implements OnInit {
   validDetails: boolean;
   existingUser: boolean;
   cardsAvailable: boolean;
+  imageUrl: string;
 
   constructor(private router: Router, private route: ActivatedRoute) {
     this.selectedCardType = -1;
@@ -35,6 +36,7 @@ export class CreditCardSelectionComponent implements OnInit {
     this.validDetails = true;
     this.creditCards = [];
     this.cardsAvailable = true;
+    this.imageUrl = `${environment.directusApiUrl}/assets/`;
   }
 
   async ngOnInit() {
@@ -64,8 +66,6 @@ export class CreditCardSelectionComponent implements OnInit {
         const user = await directus.request<User>(readItem('user', this.cnic));
         if (user.credit_card && user.credit_card.length > 0) {
           for (let card of response) {
-            console.log('user credit card list is: ', user.credit_card);
-            console.log('curr card is: ', { ...card });
             if (!user.credit_card.includes(card.id)) {
               this.creditCards.push(card);
             }
@@ -96,8 +96,6 @@ export class CreditCardSelectionComponent implements OnInit {
       },
     });
   }
-  // TODO: implement flow for something
-  // TODO: fix CSS styling, add more graphics and stuff, make it look like figma as closely as possible
 
   // once credit card has been selected
   async onContinue() {
@@ -121,5 +119,13 @@ export class CreditCardSelectionComponent implements OnInit {
     } else {
       this.validDetails = false;
     }
+  }
+
+  getImageUrl(card_image) {
+    return this.imageUrl + card_image;
+  }
+
+  selectCard(cardId: number) {
+    this.selectedCardType = cardId;
   }
 }

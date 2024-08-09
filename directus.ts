@@ -27,6 +27,7 @@ type Card = {
   interest_rate: number;
   annual_fee: number;
   benefits: string;
+  card_image: any;
 };
 
 type Theme = {
@@ -35,6 +36,7 @@ type Theme = {
   form_style?: string;
   primary_color: string;
   secondary_color: string;
+  card_style: string;
 };
 
 const directus = createDirectus(environment.directusApiUrl).with(rest());

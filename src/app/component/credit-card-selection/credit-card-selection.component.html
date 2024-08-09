@@ -1,28 +1,33 @@
-<div>
+<div class="subcontainer">
   <div *ngIf="cardsAvailable">
     <form (ngSubmit)="onContinue()">
-      <div *ngFor="let card of creditCards">
-        <span>
-          <input
-            type="radio"
-            name="creditCard"
-            [value]="card.id"
-            [(ngModel)]="selectedCardType"
-            id="card.type"
-          />
-          <label for="card.type">
-            <h2>{{ card.type }}</h2>
-          </label>
-        </span>
-        <h4>Limit:</h4>
-        <h5>{{ card.credit_limit | currency }}</h5>
-        <h4>Interest Rate:</h4>
-        <h5>{{ card.interest_rate }}%</h5>
-        <h4>Benefits:</h4>
-        <div [innerHTML]="card.benefits"></div>
+      <div class="cards-container">
+        <div
+          *ngFor="let card of creditCards"
+          class="card"
+          (click)="selectCard(card.id)"
+        >
+          <div class="card-content">
+            <img
+              [src]="getImageUrl(card.card_image)"
+              alt="Card Image"
+              class="card-image"
+            />
+            <div>
+              <h2>{{ card.type }}</h2>
+              <h4>Limit:</h4>
+              <h5>{{ card.credit_limit | currency }}</h5>
+              <h4>Interest Rate:</h4>
+              <h5>{{ card.interest_rate }}%</h5>
+              <h4>Benefits:</h4>
+              <div [innerHTML]="card.benefits"></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div>
-        <button type="submit">Continue</button>
+
+      <div class="contine-button">
+        <button class="contine-button" type="submit">Continue</button>
       </div>
     </form>
   </div>

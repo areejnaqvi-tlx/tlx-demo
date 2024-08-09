@@ -18,6 +18,7 @@ export class AppComponent implements OnInit {
   layoutCss: string;
   primaryColor: string;
   secondaryColor: string;
+  cardsCss: string;
 
   constructor(private renderer: Renderer2, private el: ElementRef) {}
 
@@ -28,6 +29,7 @@ export class AppComponent implements OnInit {
       this.formCss = this.theme.form_style;
       this.primaryColor = this.theme.primary_color;
       this.secondaryColor = this.theme.secondary_color;
+      this.cardsCss = this.theme.card_style;
       this.layoutCss = this.layoutCss.replace(
         /PRIMARY_COLOR_PLACEHOLDER/g,
         this.primaryColor
@@ -37,6 +39,7 @@ export class AppComponent implements OnInit {
         this.secondaryColor
       );
 
+      this.applyDynamicCss(this.cardsCss);
       this.applyDynamicCss(this.formCss);
       this.applyDynamicCss(this.layoutCss);
     } catch (error) {
