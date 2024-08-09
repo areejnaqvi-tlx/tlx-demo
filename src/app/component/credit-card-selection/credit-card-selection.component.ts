@@ -63,12 +63,13 @@ export class CreditCardSelectionComponent implements OnInit {
 
   // once credit card has been selected
   async onContinue() {
-    console.log('selected: ', this.selectedCardType);
     if (this.selectedCardType !== -1 && !this.existingUser) {
       this.router.navigate(['/user-details'], {
         queryParams: { cnic: this.cnic, cardType: this.selectedCardType },
       });
     } else if (this.selectedCardType !== -1 && this.existingUser) {
+      // TODO: fix css styling, add logo, fix credit cards styling, add more types of credit cards
+      // TODO: make it so that users can only apply for credit cards they dont already have
       const addCard = await directus.request(
         createItem('user_credit_card', {
           user_id: this.cnic,
@@ -77,7 +78,7 @@ export class CreditCardSelectionComponent implements OnInit {
       );
       const user = await directus.request<User>(readItem('user', this.cnic));
       this.router.navigate(['/success'], {
-        queryParams: { user: user.given_name, cnic: user.cnic },
+        queryParams: { user: user.given_name, cnic: this.cnic },
       });
     } else {
       this.validDetails = false;

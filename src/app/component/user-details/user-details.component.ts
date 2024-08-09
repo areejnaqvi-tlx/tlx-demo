@@ -27,7 +27,7 @@ export class UserDetailsComponent implements OnInit {
       mothers_name: null,
       address: null,
       marital_status: null,
-      card: null,
+      credit_card: null,
     };
     this.validParams = true;
     this.errorMessage = '';
@@ -37,7 +37,7 @@ export class UserDetailsComponent implements OnInit {
     // get cnic and selected card
     this.route.queryParamMap.subscribe(async (params) => {
       this.user.cnic = params.get('cnic') || '';
-      this.user.card = [parseInt(params.get('cardType'))];
+      this.user.credit_card = [parseInt(params.get('cardType'))];
       if (this.user.cnic === '') {
         this.validParams = false;
       } else {
@@ -71,7 +71,7 @@ export class UserDetailsComponent implements OnInit {
         const addCard = await directus.request(
           createItem('user_credit_card', {
             user_id: this.user.cnic,
-            credit_card_id: this.user.card,
+            credit_card_id: this.user.credit_card,
           })
         );
         if (addCard['user_id'] === this.user.cnic) {
@@ -85,6 +85,7 @@ export class UserDetailsComponent implements OnInit {
     } catch (error) {
       this.errorMessage =
         'There was an error processing your request. Please check form inputs and try again.';
+      console.log('Error is: ', { ...error });
     }
   }
 }

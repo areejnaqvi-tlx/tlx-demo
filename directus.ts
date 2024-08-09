@@ -17,7 +17,7 @@ type User = {
   mothers_name: string;
   address: string;
   marital_status: string;
-  card: number[];
+  credit_card: number[];
 };
 
 type Card = {

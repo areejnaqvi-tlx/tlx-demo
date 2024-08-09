@@ -1,23 +1,31 @@
 <div *ngIf="validParams">
-  <h2>Congrats {{ username }}!</h2>
-  <h5>You will recieve your card in the mail in 8-10 business days.</h5>
+  <h1>Congrats {{ username }}!</h1>
+  <h2>You will recieve your card in the mail in 8-10 business days.</h2>
   <div *ngIf="userInformationVisible">
-    <h5>Name: {{ user.given_name }} {{ user.last_name }}</h5>
-    <h5>CNIC: {{ user.cnic }}</h5>
-    <h5>Email: {{ user.email }}</h5>
-    <h5>Address: {{ user.address }}</h5>
-    <h5>Cards:</h5>
+    <br />
+    <span
+      ><h4>Name:</h4>
+      <h4>{{ user.given_name }} {{ user.last_name }}</h4>
+    </span>
+    <h4>CNIC: {{ user.cnic }}</h4>
+    <h4>Email: {{ user.email }}</h4>
+    <h4>Address: {{ user.address }}</h4>
+    <h4>Cards:</h4>
     <div *ngFor="let card of creditCardInformation">
-      <p>Type: {{ card.type }}</p>
-      <p>Credit Limit: {{ card.credit_limit | currency }}</p>
-      <p>Interest Rate: {{ card.interest_rate }}%</p>
-      <p>Annual Fee: {{ card.annual_fee | currency }}</p>
-      <p>Benefits: {{ card.benefits }}</p>
+      <h4>Type: {{ card.type }}</h4>
+      <h4>Credit Limit: {{ card.credit_limit | currency }}</h4>
+      <h4>Interest Rate: {{ card.interest_rate }}%</h4>
+      <h4>Annual Fee: {{ card.annual_fee | currency }}</h4>
+      <h4>Benefits:</h4>
+      <div [innerHTML]="card.benefits"></div>
     </div>
+    <button (click)="hideUserInformation()">Hide information.</button>
   </div>
-  <button (click)="showUserInformation()">View your information.</button>
+  <button *ngIf="!userInformationVisible" (click)="showUserInformation()">
+    View your information.
+  </button>
 </div>
 <div *ngIf="!validParams">
-  <p>Something went wrong, try again later.</p>
+  <h4>Something went wrong, try again later.</h4>
   <button (click)="goBack()">Go Back</button>
 </div>

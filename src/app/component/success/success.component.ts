@@ -43,7 +43,7 @@ export class SuccessComponent implements OnInit {
     if (this.user === null) {
       this.user = await directus.request<User>(readItem('user', this.cnic));
     }
-    for (let relation_id of this.user.card) {
+    for (let relation_id of this.user.credit_card) {
       const card_id = await directus.request(
         readItem('user_credit_card', relation_id)
       );
@@ -53,6 +53,10 @@ export class SuccessComponent implements OnInit {
       this.creditCardInformation.push(card);
     }
     this.userInformationVisible = true;
+  }
+
+  hideUserInformation() {
+    this.userInformationVisible = false;
   }
 
   goBack() {
