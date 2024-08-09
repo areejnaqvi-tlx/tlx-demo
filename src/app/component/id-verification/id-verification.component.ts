@@ -30,11 +30,14 @@ export class IdVerificationComponent {
           response !== null &&
           response.some((userId) => userId['id'] === this.cnic)
         ) {
-          this.errorMessage = 'Please enter a valid 13 digit value';
+          this.errorMessage = 'You already have an account!';
+          this.router.navigate(['/credit-card-selection'], {
+            queryParams: { cnic: this.cnic, existingUser: true },
+          });
         } else {
           this.errorMessage = '';
           this.router.navigate(['/credit-card-selection'], {
-            queryParams: { cnic: this.cnic },
+            queryParams: { cnic: this.cnic, existingUser: false },
           });
         }
       } catch (error) {

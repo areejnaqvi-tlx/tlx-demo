@@ -37,8 +37,8 @@ export class UserDetailsComponent implements OnInit {
     // get cnic and selected card
     this.route.queryParamMap.subscribe(async (params) => {
       this.user.cnic = params.get('cnic') || '';
-      this.user.card = parseInt(params.get('cardType')) || -1;
-      if (this.user.cnic === '' || this.user.card === -1) {
+      this.user.card = [parseInt(params.get('cardType'))];
+      if (this.user.cnic === '') {
         this.validParams = false;
       } else {
         this.validParams = true;
@@ -77,7 +77,7 @@ export class UserDetailsComponent implements OnInit {
         if (addCard['user_id'] === this.user.cnic) {
           this.errorMessage = '';
           this.router.navigate(['/success'], {
-            queryParams: { user: this.user.given_name },
+            queryParams: { user: this.user.given_name, cnic: this.user.cnic },
           });
         }
       }

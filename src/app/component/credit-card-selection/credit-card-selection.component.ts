@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { directus, Card } from '../../../../directus';
-import { readItem, readItems } from '@directus/sdk';
+import { directus, Card, User } from '../../../../directus';
+import { createItem, readItem, readItems, updateItem } from '@directus/sdk';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -18,6 +18,7 @@ export class CreditCardSelectionComponent implements OnInit {
   selectedCardType: number;
   cnic: string;
   validDetails: boolean;
+  existingUser: boolean;
 
   constructor(
     private router: Router,
@@ -35,6 +36,7 @@ export class CreditCardSelectionComponent implements OnInit {
       // get cnic from params
       this.route.queryParamMap.subscribe((params) => {
         this.cnic = params.get('cnic') || '';
+        this.existingUser = params.get('existingUser') === 'true' || false;
         if (this.cnic === '') {
           this.validDetails = false;
         } else {
@@ -60,11 +62,22 @@ export class CreditCardSelectionComponent implements OnInit {
   }
 
   // once credit card has been selected
-  onContinue() {
+  async onContinue() {
     console.log('selected: ', this.selectedCardType);
-    if (this.selectedCardType !== -1) {
+    if (this.selectedCardType !== -1 && !this.existingUser) {
       this.router.navigate(['/user-details'], {
         queryParams: { cnic: this.cnic, cardType: this.selectedCardType },
+      });
+    } else if (this.selectedCardType !== -1 && this.existingUser) {
+      const addCard = await directus.request(
+        createItem('user_credit_card', {
+          user_id: this.cnic,
+          credit_card_id: this.selectedCardType,
+        })
+      );
+      const user = await directus.request<User>(readItem('user', this.cnic));
+      this.router.navigate(['/success'], {
+        queryParams: { user: user.given_name, cnic: user.cnic },
       });
     } else {
       this.validDetails = false;

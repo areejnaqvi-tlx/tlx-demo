@@ -17,7 +17,7 @@ type User = {
   mothers_name: string;
   address: string;
   marital_status: string;
-  card: number;
+  card: number[];
 };
 
 type Card = {
@@ -35,7 +35,7 @@ type Theme = {
   form_style?: string;
   primary_color: string;
   secondary_color: string;
-}
+};
 
 const directus = createDirectus(environment.directusApiUrl).with(rest());
 

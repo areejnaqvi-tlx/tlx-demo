@@ -1,6 +1,21 @@
 <div *ngIf="validParams">
-  <h2>Congrats {{ user }}!</h2>
+  <h2>Congrats {{ username }}!</h2>
   <h5>You will recieve your card in the mail in 8-10 business days.</h5>
+  <div *ngIf="userInformationVisible">
+    <h5>Name: {{ user.given_name }} {{ user.last_name }}</h5>
+    <h5>CNIC: {{ user.cnic }}</h5>
+    <h5>Email: {{ user.email }}</h5>
+    <h5>Address: {{ user.address }}</h5>
+    <h5>Cards:</h5>
+    <div *ngFor="let card of creditCardInformation">
+      <p>Type: {{ card.type }}</p>
+      <p>Credit Limit: {{ card.credit_limit | currency }}</p>
+      <p>Interest Rate: {{ card.interest_rate }}%</p>
+      <p>Annual Fee: {{ card.annual_fee | currency }}</p>
+      <p>Benefits: {{ card.benefits }}</p>
+    </div>
+  </div>
+  <button (click)="showUserInformation()">View your information.</button>
 </div>
 <div *ngIf="!validParams">
   <p>Something went wrong, try again later.</p>
